@@ -1,0 +1,31 @@
+#!/usr/bin/php
+<?php
+	// Wrapper for executable code within the Weather4Me Alerts Platform. Accepts one argument and 
+	// does a fork-detach-fork on that code.
+	
+	$npid = pcntl_fork(); // DETACH FROM TERMINAL AND BE REAPED BY INIT
+
+    if ($npid==-1) die("Error: impossible to pcntl_fork()\n");
+    else if ($npid) exit(0); // THE GRANPA DIES
+    else // MOTHER GOES ON TO MAKE CHILDREN
+    {
+        $pid = pcntl_fork();
+        if ($pid==-1) die("Error: impossible to pcntl_fork()\n");
+        else if ($pid)
+        {
+            $pid_arr[] = $pid;
+        }
+        if (!$pid) // CHILDREN
+        {
+			$commands = "";
+			if($argv[2]){
+				$commands = " " . $argv[2];
+			}
+            shell_exec ("/home/wx4me/" . $argv[1] . $commands );
+        }
+
+        // we are the parent and we wait for all children to die
+        pcntl_waitpid($pid, $status);
+        exit();
+    }
+?>

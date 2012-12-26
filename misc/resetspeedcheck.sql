@@ -1,0 +1,1 @@
+UPDATE `phpqbt`.`state` SET `value` = 0 WHERE `name` = 'speedcheck';
