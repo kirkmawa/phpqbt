@@ -1,6 +1,6 @@
 <?php
 
-// TriStateAlerts EMWIN ByteBlaster client
+// EMWIN ByteBlaster client
 // Implements EMWIN's Quick Block Transfer protocol.
 
 $bbsock = NULL;
