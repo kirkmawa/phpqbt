@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-	// Wrapper for executable code within the Weather4Me Alerts Platform. Accepts one argument and 
+	// Wrapper for executable code within phpqbt. Accepts one argument and 
 	// does a fork-detach-fork on that code.
 	
 	$npid = pcntl_fork(); // DETACH FROM TERMINAL AND BE REAPED BY INIT
@@ -21,7 +21,7 @@
 			if($argv[2]){
 				$commands = " " . $argv[2];
 			}
-            shell_exec ("/home/wx4me/" . $argv[1] . $commands );
+            shell_exec ($argv[1] . $commands );
         }
 
         // we are the parent and we wait for all children to die
