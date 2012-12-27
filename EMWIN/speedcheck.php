@@ -2,8 +2,10 @@
 <?php
 	error_reporting ('E_NONE');
 	
-	$db0 = mysql_connect ("localhost", "user", "password");
-	mysql_select_db ("phpqbt");
+	require_once ("config.php");
+	
+	$db0 = mysql_connect ($config['db']['host'], $config['db']['user'], $config['db']['password']);
+	mysql_select_db ($config['db']['db']);
 	// Check to see if an instance of this file is already running. If not, set the flag
 	$state = mysql_fetch_assoc(mysql_query ("SELECT * FROM `state` WHERE `name` = 'speedcheck' LIMIT 1"));
 	if ($state['value']) {
@@ -45,8 +47,8 @@
 	echo ("BBSERVERS: Got server list... " . count ($servers) . " servers found\n");
 	// Now that we have the servers, we need to connect to each for five seconds and see how much data we pull
 	
-	$db0 = mysql_connect ("localhost", "user", "password");
-	mysql_select_db ("phpqbt");
+	$db0 = mysql_connect ($config['db']['host'], $config['db']['user'], $config['db']['password']);
+	mysql_select_db ($config['db']['db']);
 
 	foreach ($servers as &$server) {
 		$ipport = explode (":", $server);
