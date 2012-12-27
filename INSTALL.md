@@ -21,3 +21,8 @@ From the directory where you unzipped the package, simply type the following com
 
 `nohup ./emwin.sh &`
 
+Now what?
+========
+
+A vanilla installation of phpqbt will just connect to an EMWIN server, ingest data, and do nothing. You can very easily extend the software to process various products. See the [Extending phpqbt](https://github.com/kirkmawa/phpqbt/wiki/Extending-phpqbt) wiki page on GitHub for more details.
+
