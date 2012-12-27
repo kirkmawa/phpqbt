@@ -9,7 +9,6 @@ Installing phpqbt
 **Make changes in the following places to account for your own database settings:**
 
 - `emwin.sh` line 9
-- `restartemwin.sh` line 5
 
 Running phpqbt
 ============
