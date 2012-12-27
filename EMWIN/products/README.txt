@@ -1,0 +1,1 @@
+This directory exists to hold all products received via EMWIN. phpqbt will automatically save the latest version of a file here.
