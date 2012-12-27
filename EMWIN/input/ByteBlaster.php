@@ -12,8 +12,8 @@ $is_svr_list = false;
 
 echo ("ByteBlaster: ByteBlaster QBT plugin loaded.\r\n");
 
-function bb_get () {
-	global $bbsock, $connected, $serverpos, $lastcomplete, $loginsenttime, $products, $is_svr_list;
+function byteblaster_get () {
+	global $config, $bbsock, $connected, $serverpos, $lastcomplete, $loginsenttime, $products, $is_svr_list;
 	$slres = qbtdbq ("SELECT * FROM `bbservers` WHERE `speed` < 2500 ORDER BY `speed` DESC");
 	while ($slentry = mysql_fetch_assoc ($slres)) {
 		$serverlist[] = $slentry['ip'] . ":" . $slentry['port'];

@@ -2,8 +2,7 @@
 <?php
 chdir (__DIR__);
 
-$inputplugins = array ("byteblaster");
-$getfunc = "bb_get";
+require_once ("config.php");
 
 // Include any other files from the lib/ folder
 if ($handle = opendir('./lib/')) {
@@ -47,7 +46,7 @@ pcntl_signal (SIGALRM, "alarm_handler");
 
 while (true) {
 	// Get the latest packet from the input plugin's function
-	eval ('$chunk = ' . $getfunc . '();');
+	eval ('$chunk = ' . $config['inputplugin'] . '_get();');
 	// Make sure it is a valid chunch and not a server list.
 	if ($chunk && !$is_svr_list) {
 		// Retrieve the header (first 86 bytes minus the 6 null bytes at the beginning)
