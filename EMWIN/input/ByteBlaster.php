@@ -56,7 +56,7 @@ function byteblaster_get () {
 	// we're connected, now what?
 	// I'M GLAD YOU ASKED. NOW TO PULL 1116 BYTES FROM THE SERVER
 	if (time () - $loginsenttime > 115) {
-		if (socket_write ($bbsock, "phpqbt|NM-phpqbt@drewkirkman.com|")) {
+		if (socket_write ($bbsock, "phpqbt|NM-" . $config['byteblaster']['email'] . "|")) {
 			$loginsenttime = time();
 		}
 	}

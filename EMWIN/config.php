@@ -16,5 +16,10 @@
 	// call that function to get a chunk from the source, be it serial, byteblaster, etc
 	$config['inputplugin'] = "byteblaster";
 	
+	// BYTEBLASTER PLUGIN
+	
+	// Set your email address. This will be sent to the EMWIN servers as a login string.
+	$config['byteblaster']['email'] = "phpqbt@drewkirkman.com";
+	
 	
 ?>
