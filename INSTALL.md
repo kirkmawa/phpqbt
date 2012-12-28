@@ -6,10 +6,6 @@ Installing phpqbt
 - **It is recommended you create a normal user with full access to just the phpqbt database.**
 - Edit `EMWIN/config.php` to reflect your own database settings and other information
 
-**Make changes in the following places to account for your own database settings:**
-
-- `emwin.sh` line 9
-
 Running phpqbt
 ============
 

@@ -25,6 +25,10 @@ foreach (glob ("./processing/*.php") as $procfile) {
 $products = array();
 $lastclean = time ();
 
+// Clear the speedcheck flag in the database. If the program is just starting, 
+// there should be no speedcheck in progress.
+$qbtdb->query ("UPDATE `phpqbt`.`state` SET `value` = 0 WHERE `name` = 'speedcheck'");
+
 // If this process receives a SIGALRM, terminate the process. 
 function alarm_handler ($signo) {
 	echo ("EMWIN: caught SIGALRM, restarting...\n");
