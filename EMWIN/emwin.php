@@ -4,36 +4,24 @@ chdir (__DIR__);
 
 require_once ("config.php");
 
-// Include any other files from the lib/ folder
-if ($handle = opendir('./lib/')) {
-    while (false !== ($entry = readdir($handle))) {
-        if ($entry != "." && $entry != ".." && $entry != ".svn") {
-            require_once ("./lib/" . $entry);
-        }
-    }
-    closedir($handle);
+// Load output plugins
+foreach (glob ("./lib/*.php") as $libfile) {
+	echo ("emwin: loading library file " . basename ($libfile) . "\n");
+	require_once ($libfile);
 }
 
 // Include any input plugins from the input/ folder
-if ($inhandle = opendir('./input/')) {
-    while (false !== ($entry = readdir($inhandle))) {
-        if ($entry != "." && $entry != ".." && $entry != ".svn") {
-            require_once ("./input/" . $entry);
-        }
-    }
-    closedir($inhandle);
+foreach (glob ("./input/*.php") as $inputfile) {
+	echo ("emwin: loading input plugin " . basename ($inputfile, ".php") . "\n");
+	require_once ($inputfile);
 }
 
 // Include any processing plugins from the processing/ foler
-if ($prochandle = opendir('./processing/')) {
-    while (false !== ($entry = readdir($prochandle))) {
-        if ($entry != "." && $entry != ".." && $entry != ".svn") {
-            require_once ("./processing/" . $entry);
-        }
-    }
-    closedir($prochandle);
+foreach (glob ("./processing/*.php") as $procfile) {
+	echo ("emwin: loading processing plugin " . basename ($procfile) . "\n");
+	require_once ($procfile);
 }
-
+        
 $products = array();
 $lastclean = time ();
 
