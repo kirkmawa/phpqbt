@@ -3,16 +3,16 @@
 	error_reporting ('E_NONE');
 	
 	require_once ("config.php");
+	require_once ("lib/db.php");
 	
-	$db0 = mysql_connect ($config['db']['host'], $config['db']['user'], $config['db']['password']);
-	mysql_select_db ($config['db']['db']);
 	// Check to see if an instance of this file is already running. If not, set the flag
-	$state = mysql_fetch_assoc(mysql_query ("SELECT * FROM `state` WHERE `name` = 'speedcheck' LIMIT 1"));
+	$stres = $qbtdb->query("SELECT * FROM `state` WHERE `name` = 'speedcheck' LIMIT 1");
+	$state = $stres->fetch_assoc();
 	if ($state['value']) {
 		echo ("BBSERVERS: already processing a server list\n");
 		exit;
 	}
-	mysql_query ("UPDATE `state` SET `value` = 1 WHERE `name` = 'speedcheck' LIMIT 1");
+	$qbtdb->query("UPDATE `state` SET `value` = 1 WHERE `name` = 'speedcheck' LIMIT 1");
 /*
 
 1. Take server list from EMWIN client
@@ -47,9 +47,6 @@
 	echo ("BBSERVERS: Got server list... " . count ($servers) . " servers found\n");
 	// Now that we have the servers, we need to connect to each for five seconds and see how much data we pull
 	
-	$db0 = mysql_connect ($config['db']['host'], $config['db']['user'], $config['db']['password']);
-	mysql_select_db ($config['db']['db']);
-
 	foreach ($servers as &$server) {
 		$ipport = explode (":", $server);
 		$ip = ""; 
@@ -84,12 +81,13 @@
 			socket_close ($bbstest);
 			echo ("downloaded " . $datalen . " bytes in " . $tottime . " seconds. Speed rating is " . $coeff . "\n");
 			// Check for already existing server
-			if (mysql_num_rows(mysql_query("SELECT * FROM `bbservers` WHERE `ip` = '" . $ip . "'")) > 0) {
+			$svrcheck = $qbtdb->query("SELECT * FROM `bbservers` WHERE `ip` = '" . $ip . "'");
+			if ($svrcheck->num_rows > 0) {
 				// exists
-				mysql_query ("UPDATE `bbservers` SET `port` = " . $ipport[1] . ", `speed` = " . $coeff . ", `updated` = '" . date ('Y-m-d H:i:s') . "' WHERE `ip` = '" . $ip . "' LIMIT 1");
+				$qbtdb->query ("UPDATE `bbservers` SET `port` = " . $ipport[1] . ", `speed` = " . $coeff . ", `updated` = '" . date ('Y-m-d H:i:s') . "' WHERE `ip` = '" . $ip . "' LIMIT 1");
 			} else {
 				// doesn't exist, add new server
-				mysql_query ("INSERT INTO `bbservers` (`ip`, `port`, `speed`, `updated`) VALUES ('" . $ip . "', " . $ipport[1] . ", " . $coeff . ", '" . date ('Y-m-d H:i:s') . "')");
+				$qbtdb->query ("INSERT INTO `bbservers` (`ip`, `port`, `speed`, `updated`) VALUES ('" . $ip . "', " . $ipport[1] . ", " . $coeff . ", '" . date ('Y-m-d H:i:s') . "')");
 			}
 		}
 	}
@@ -97,8 +95,8 @@
 	// Clean up servers that do not exist
 	echo ("BBSERVERS: Cleaning up database...\n");
 	$svrdb = array ();
-	$res9 = mysql_query("SELECT * FROM `bbservers` WHERE 1");
-	while ($svrent = mysql_fetch_assoc($res9)) {
+	$res9 = $qbtdb->query("SELECT * FROM `bbservers` WHERE 1");
+	while ($svrent = $res9->fetch_assoc()) {
 		$svrdb[] = $svrent['ip'] . ":" . $svrent['port'];
 	}
 	
@@ -113,11 +111,10 @@
 	foreach ($svrdiff as $svr2del) {
 		$svr2del = explode (":", $svr2del);
 		echo ("We are going to delete " . $svr2del[0] . "\n");
-		mysql_query ("DELETE FROM `bbservers` WHERE `ip` = '" . $svr2del[0] ."' AND `port` = " . $svr2del[1] . " LIMIT 1");
+		$qbtdb->query ("DELETE FROM `bbservers` WHERE `ip` = '" . $svr2del[0] ."' AND `port` = " . $svr2del[1] . " LIMIT 1");
 	}
 	
 	//Unset the in-use flag
-	mysql_query ("UPDATE `state` SET `value` = 0 WHERE `name` = 'speedcheck' LIMIT 1");
-	
-	mysql_close ($db0);
+	$qbtdb->query ("UPDATE `state` SET `value` = 0 WHERE `name` = 'speedcheck' LIMIT 1");
+
 ?>
