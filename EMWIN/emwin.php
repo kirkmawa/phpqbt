@@ -2,6 +2,8 @@
 <?php
 chdir (__DIR__);
 
+declare (ticks=1);
+
 require_once ("config.php");
 
 // Load output plugins
