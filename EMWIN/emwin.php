@@ -81,7 +81,10 @@ while (true) {
 				$fproduct .= $fpiece;
 			}
 			$fproduct = rtrim ($fproduct, "\0");				// Righ trim the ascii null characters '\0'
-			$fproduct = str_replace ("\r", "", $fproduct);		//Convert to UNIX style line endings
+			if (substr ($filename, -3) == "TXT") {
+				// The following line breaks images. 
+				$fproduct = str_replace ("\r", "", $fproduct);		//Convert to UNIX style line endings
+			}
 			unset ($products[$filename]);
 			$lastcomplete = time();
 			file_put_contents ("./products/" . $filename, $fproduct);
