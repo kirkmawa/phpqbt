@@ -10,7 +10,7 @@ $lastcomplete = 0;
 $loginsenttime = 0;
 $is_svr_list = false;
 
-echo ("ByteBlaster: ByteBlaster QBT plugin loaded.\r\n");
+echo ("ByteBlaster: ByteBlaster QBT plugin loaded.\n");
 
 function byteblaster_get () {
 	global $config, $qbtdb, $bbsock, $connected, $serverpos, $lastcomplete, $loginsenttime, $products, $is_svr_list;
@@ -32,7 +32,7 @@ function byteblaster_get () {
 			$serverpos = 0;
 		}
 		$ipport = explode (":", $serverlist[$serverpos]);
-		echo ("ByteBlaster: connecting to " . $serverlist[$serverpos] . "...\r\n");
+		echo ("ByteBlaster: connecting to " . $serverlist[$serverpos] . "...\n");
 		$bbsock = msConnectSocket ($ipport[0], $ipport[1], 5);
 		if ($bbsock) {
 			// socket is connected
@@ -55,8 +55,16 @@ function byteblaster_get () {
 	
 	// we're connected, now what?
 	// I'M GLAD YOU ASKED. NOW TO PULL 1116 BYTES FROM THE SERVER
+	
+	// Most ByteBlaster servers expect a login string at connect and every two minutes thereafter.
 	if (time () - $loginsenttime > 115) {
-		if (socket_write ($bbsock, "phpqbt|NM-" . $config['byteblaster']['email'] . "|")) {
+		$loginstring = "phpqbt|NM-" . $config['byteblaster']['email'] . "|";
+		// We need to xor the outgoing login string
+		$loginxor = null;
+		for ($l=0;$l<strlen($loginstring);$l++)
+			$loginxor .= chr(ord ($loginstring{$l}) ^ 255);
+		}
+		if (socket_write ($bbsock, $loginxor)) {
 			$loginsenttime = time();
 		}
 	}
@@ -68,21 +76,22 @@ function byteblaster_get () {
 		// Unset the alarm.
 		pcntl_alarm(0);
 		for($i=0;$i<strlen($insbyte);$i++) {
+			// The EMWIN data comes xor'd, we must reverse this
 			$chunk .= chr(ord ($insbyte{$i}) ^ 255);
 		}
 		
 		$good_data = true;
 		$is_svr_list = false;
-		//print ("ByteBlaster: read " . strlen ($chunk) . " bytes from socket\r\n");
+		//print ("ByteBlaster: read " . strlen ($chunk) . " bytes from socket\n");
 		$sincecomp = time() - $lastcomplete;
-		// echo ("ByteBlaster: time since last complete product: $sincecomp seconds\r\n");
+		// echo ("ByteBlaster: time since last complete product: $sincecomp seconds\n");
 		if ($sincecomp > 90) {
-			echo ("ByteBlaster: New product not detected in the last 90 seconds; moving to next server\r\n");
+			echo ("ByteBlaster: New product not detected in the last 90 seconds; moving to next server\n");
 			$connected = false;
 		}
 	
 		if (strpos ($chunk, "/ServerList/") === 0) {
-			echo ("ByteBlaster: got new server list...\r\n");
+			echo ("ByteBlaster: got new server list...\n");
 			// get the server lists out of the server list
 			preg_match_all ("#/.+/(.+)\\\\#U", $chunk, $svrlist1);
 			$regserver = explode("|", $svrlist1[1][0]);
