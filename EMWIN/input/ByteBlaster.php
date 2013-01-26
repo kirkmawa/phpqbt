@@ -61,7 +61,7 @@ function byteblaster_get () {
 		$loginstring = "phpqbt|NM-" . $config['byteblaster']['email'] . "|";
 		// We need to xor the outgoing login string
 		$loginxor = null;
-		for ($l=0;$l<strlen($loginstring);$l++)
+		for ($l=0;$l<strlen($loginstring);$l++) {
 			$loginxor .= chr(ord ($loginstring{$l}) ^ 255);
 		}
 		if (socket_write ($bbsock, $loginxor)) {
