@@ -66,7 +66,7 @@ while (true) {
 		// Now we get the data from the 86 bytes minus the last six into cdata
 		// We store the packet data into the array based on its part number and increment our recieved parts
 
-		echo ("EMWIN: got " . $filename . " part " . $numnow[1] . " of " . $numtotal[1] . "\r\n");
+		echo ("EMWIN: got " . $filename . " part " . $numnow[1] . " of " . $numtotal[1] . "\n");
 		$cdata = substr ($chunk, 86, -6);
 		$idx = (string) $numnow[1]; //Get the packet number
 		$products[$filename]["data"][$idx] = $cdata;
@@ -74,7 +74,7 @@ while (true) {
 
 		// If the file is done!
 		if ($products[$filename]["rcvdparts"] == $products[$filename]["totalparts"]) {
-			echo ("EMWIN: " . $filename . " completed*****\r\n");
+			echo ("EMWIN: " . $filename . " completed*****\n");
 			ksort ($products[$filename]["data"], SORT_NUMERIC);	// Sort out the index files to put them in order
 			$fproduct = null;									// Full Product variable
 			foreach ($products[$filename]["data"] as $fpiece) {
@@ -113,10 +113,10 @@ while (true) {
 	
 	// Clean up the products that fail to complete within 120 seconds to make way for a new products
 	if (time () - $lastclean > 300) {
-		echo ("EMWIN: performing cleanup...\r\n");
+		echo ("EMWIN: performing cleanup...\n");
 		foreach ($products as $fileent => $fdata) { //Fileent is the key and fdata is the array
 			if (($fdata["rcvdparts"] < $fdata["totalparts"]) && (time () - $fdata["last"] > 120)) {
-				echo ("EMWIN: cleanup: removing " . $fileent . "...\r\n");
+				echo ("EMWIN: cleanup: removing " . $fileent . "...\n");
 				unset ($products[$fileent]);
 			}
 		}
