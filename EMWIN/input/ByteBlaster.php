@@ -65,6 +65,7 @@ function byteblaster_get () {
 			$loginxor .= chr(ord ($loginstring{$l}) ^ 255);
 		}
 		if (socket_write ($bbsock, $loginxor)) {
+			echo ("ByteBlaster: sent login string\n");
 			$loginsenttime = time();
 		}
 	}
