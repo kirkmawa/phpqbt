@@ -85,6 +85,20 @@ while (true) {
 				// The following line breaks images. 
 				$fproduct = str_replace ("\r", "", $fproduct);		//Convert to UNIX style line endings
 			}
+			if (substr ($filename, -3) == "ZIS") {
+				// The right trim done above can kill ZIP archives. It shaves a few bytes off the EOCDR and
+				// corrupts the file. However, we can fix this problem by detecting the length of the EOCDR
+				// and re-adding the null bytes as needed.
+				$eocdr = bin2hex (substr($fproduct, -22)); // EOCDR should be 22 bytes long, at the end of the file
+        		$bytestoadd = strpos($eocdr, "504b0506") / 2; // the EOCDR's signature is 0x06054b50
+        		if ($bytestoadd !== false && $bytestoadd > 0) {
+        			echo ("EMWIN: fixing zip archive by adding " . $bytestoadd . " null bytes\n");
+        			while ($bytestoadd > 0) {
+        				$fproduct .= "\0";
+        				$bytestoadd--;
+        			}
+        		}
+			}
 			unset ($products[$filename]);
 			$lastcomplete = time();
 			file_put_contents ("./products/" . $filename, $fproduct);
