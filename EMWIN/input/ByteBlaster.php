@@ -84,30 +84,33 @@ function byteblaster_get () {
 		$good_data = true;
 		$is_svr_list = false;
 		//print ("ByteBlaster: read " . strlen ($chunk) . " bytes from socket\n");
-		$sincecomp = time() - $lastcomplete;
-		// echo ("ByteBlaster: time since last complete product: $sincecomp seconds\n");
-		if ($sincecomp > 90) {
-			echo ("ByteBlaster: New product not detected in the last 90 seconds; moving to next server\n");
-			$connected = false;
+		if ($config['byteblaster']['product_timeout'] > 0) {
+			$sincecomp = time() - $lastcomplete;
+			if ($sincecomp > $config['byteblaster']['product_timeout']) {
+				echo ("ByteBlaster: New product not detected in the last " . $config['byteblaster']['product_timeout'] . " seconds; moving to next server\n");
+				$connected = false;
+			}
 		}
 	
 		if (strpos ($chunk, "/ServerList/") === 0) {
 			echo ("ByteBlaster: got new server list...\n");
-			// get the server lists out of the server list
-			preg_match_all ("#/.+/(.+)\\\\#U", $chunk, $svrlist1);
-			$regserver = explode("|", $svrlist1[1][0]);
-			$trash = array_pop ($regserver);
-			$satserver = explode ("+", $svrlist1[1][1]);
-			$trash = array_pop ($satserver);
-			$servers = array_merge ($regserver, $satserver);
-			$svrlist = "";
-			foreach ($servers as $server) {
-				$svrlist .= $server . "-";
+			if ($config['byteblaster']['speedcheck']) {
+				// get the server lists out of the server list
+				preg_match_all ("#/.+/(.+)\\\\#U", $chunk, $svrlist1);
+				$regserver = explode("|", $svrlist1[1][0]);
+				$trash = array_pop ($regserver);
+				$satserver = explode ("+", $svrlist1[1][1]);
+				$trash = array_pop ($satserver);
+				$servers = array_merge ($regserver, $satserver);
+				$svrlist = "";
+				foreach ($servers as $server) {
+					$svrlist .= $server . "-";
+				}
+				passthru ("../bin/start EMWIN/speedcheck.php \"" . $svrlist . "\" >> /dev/null 2>&1 &");
 			}
-			passthru ("../bin/start EMWIN/speedcheck.php \"" . $svrlist . "\" >> /dev/null 2>&1 &");
 			$good_data = false;
-			return null;
 			$is_svr_list = true;
+			return null;
 		}
 		if ($good_data) {
 			return $chunk;
