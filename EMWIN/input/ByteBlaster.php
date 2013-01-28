@@ -58,7 +58,7 @@ function byteblaster_get () {
 	
 	// Most ByteBlaster servers expect a login string at connect and every two minutes thereafter.
 	if (time () - $loginsenttime > 115) {
-		$loginstring = "phpqbt|NM-" . $config['byteblaster']['email'] . "|";
+		$loginstring = "ByteBlast Client|NM-" . $config['byteblaster']['email'] . "|";
 		// We need to xor the outgoing login string
 		$loginxor = null;
 		for ($l=0;$l<strlen($loginstring);$l++) {
