@@ -1,5 +1,6 @@
 #!/usr/bin/php
 <?php
+	chdir (__DIR__);
 	// Wrapper for executable code within phpqbt. Accepts one argument and 
 	// does a fork-detach-fork on that code.
 	
@@ -21,7 +22,7 @@
 			if($argv[2]){
 				$commands = " " . $argv[2];
 			}
-            shell_exec ($argv[1] . $commands );
+            shell_exec ("../" . $argv[1] . $commands );
         }
 
         // we are the parent and we wait for all children to die
