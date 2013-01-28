@@ -59,7 +59,7 @@ while (true) {
 			$products[$filename]["data"] = array();				//Data
 			$products[$filename]["rcvdparts"] = 0;				//Recieved Parts
 			$products[$filename]["totalparts"] = $numtotal[1];	//Total Parts
-			$products[$filename]["checksum"] = $csum[1];		//Checksum
+			$products[$filename]["checksum"] = array();			//Checksum
 			$products[$filename]["last"] = time();				//Time it was last touched
 		}
 		
@@ -69,8 +69,17 @@ while (true) {
 		echo ("EMWIN: got " . $filename . " part " . $numnow[1] . " of " . $numtotal[1] . "\n");
 		$cdata = substr ($chunk, 86, -6);
 		$idx = (string) $numnow[1]; //Get the packet number
-		$products[$filename]["data"][$idx] = $cdata;
-		$products[$filename]["rcvdparts"]++;
+		$products[$filename]["data"][$idx] = $cdata; // The actual data
+		$products[$filename]["checksum"][$idx] = $csum[1]; // The expected checksum
+		$compsum = 0; // Define a variable to hold the computed checksum
+		for ($c=0;$c<strlen($cdata);$c++) {
+			$compsum += ord ($cdata{$c});
+		}
+		if ($compsum == $csum[1]) {
+			$products[$filename]["rcvdparts"]++;
+		} else {
+			echo ("EMWIN: Checksum mismatch (expected " . $csum[1] . "/got " . $compsum . "), ignoring " . $filename . " part " . $numnow[1] . "\n");
+		}
 
 		// If the file is done!
 		if ($products[$filename]["rcvdparts"] == $products[$filename]["totalparts"]) {
