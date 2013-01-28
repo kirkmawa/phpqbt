@@ -67,9 +67,9 @@
 			echo ("connection failed or timed out\n");
 		} else {
 			$curtime = microtime (true);
-			while (strlen ($emdata) < 5120) {
-				$emdata .= socket_read ($bbstest, 1500);
-				if ((strlen ($emdata) < 2560) && ((microtime (true) - $curtime) > 5)) {
+			while (strlen ($emdata) < 5580) {
+				$emdata .= socket_read ($bbstest, 1116);
+				if ((strlen ($emdata) < 2790) && ((microtime (true) - $curtime) > 5)) {
 					echo ("connected but too slow!... ");
 					break;
 				}
