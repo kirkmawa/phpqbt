@@ -40,7 +40,7 @@
 	// Use on: SVR TOR FFW
 	function get_polygon ($fulltext) {
 		// Return polygon in database friendly format
-		preg_match ("/LAT\\.\\.\\.LON (.+)TIME\\.\\.\\.MOT\\.\\.\\.LOC/ms", $fulltext, $polygon);
+		preg_match ("/LAT\\.\\.\\.LON (.+)\\w/ms", $fulltext, $polygon);
 		preg_match_all ("/\\d{4,5}/", $polygon[1], $polygon2);
 		$polygon = implode (" ", $polygon2[0]);
 		return $polygon;
