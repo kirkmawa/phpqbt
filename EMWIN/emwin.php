@@ -50,9 +50,9 @@ while (true) {
 		$hdrent = explode ("/", $chdr, 6);
 		$trash = array_shift ($hdrent);
 		$filename = substr ($hdrent[0], 2);						//Filename
-		preg_match ("/^PN (\\d+)+/", $hdrent[1], $numnow);		//Current Part
-		preg_match ("/^PT (\\d+)+/", $hdrent[2], $numtotal);	//Total Parts
-		preg_match ("/^CS (\\d+)+/", $hdrent[3], $csum);		//Checksum
+		preg_match ("/^PN(\\d+)+/", $hdrent[1], $numnow);		//Current Part
+		preg_match ("/^PT(\\d+)+/", $hdrent[2], $numtotal);	//Total Parts
+		preg_match ("/^CS(\\d+)+/", $hdrent[3], $csum);		//Checksum
 		//If it is the first packet of a set we create a new array for each element
 		if (!isset ($products[$filename])) {
 			$products[$filename] = array();
